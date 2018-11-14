@@ -1,6 +1,7 @@
 package com.github.salomonbrys.gradle.sass
 
 import de.undercouch.gradle.tasks.download.Download
+import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Copy
@@ -19,17 +20,15 @@ class SassPlugin : Plugin<Project> {
         override fun toString() = ext
     }
 
-    override fun apply(project: Project) {
+    @Suppress("UnstableApiUsage")
+    private fun Project.applyPlugin() {
 
-        val config = SassExtension(project)
-        project.extensions.add("sass", config)
+        val sassPrepare = task<DefaultTask>("sassPrepare")
 
-        val sassCompile = project.task<SassTask>("sassCompile") {
-            group = "build"
-            source = project.fileTree("src/main/sass")
-        }
+        val config = SassExtension(this)
+        extensions.add("sass", config)
 
-        project.afterEvaluate {
+        afterEvaluate {
             val exe = config.exe
             val (os, ext) = when {
                 OperatingSystem.current().isLinux -> "linux" to ArchiveExt.TARGZ
@@ -39,31 +38,38 @@ class SassPlugin : Plugin<Project> {
             }
             val arch = if ("64" in System.getProperty( "os.arch" )) "x64" else "ia32"
             if (exe is SassExtension.Exe.Download) {
-                val sassDownload = project.task<Download>("sassDownload") {
+                val sassDownload = task<Download>("sassDownload") {
                     group = "build setup"
                     val archive = "dart-sass-${exe.version}-$os-$arch.$ext"
-                    val output = File("${project.gradle.gradleUserHomeDir}/sass/archive/$archive")
+                    val output = File("${gradle.gradleUserHomeDir}/sass/archive/$archive")
                     onlyIf { !output.exists() }
                     src("https://github.com/sass/dart-sass/releases/download/${exe.version}/$archive")
                     dest(output)
                     tempAndMove(true)
                 }
 
-                val sassExtract = project.task<Copy>("sassExtract") {
+                val sassExtract = task<Copy>("sassExtract") {
                     group = "build setup"
                     dependsOn(sassDownload)
                     from(when(ext) {
-                        ArchiveExt.TARGZ -> project.tarTree(sassDownload.dest)
-                        ArchiveExt.ZIP -> project.zipTree(sassDownload.dest)
+                        ArchiveExt.TARGZ -> tarTree(sassDownload.dest)
+                        ArchiveExt.ZIP -> zipTree(sassDownload.dest)
                     })
                     into(exe.outputDir.resolve(exe.version))
                 }
 
-                sassCompile.dependsOn(sassExtract)
+                sassPrepare.dependsOn(sassExtract)
             }
         }
 
-        project.tasks["build"].dependsOn(sassCompile)
+        val sassCompile = task<SassTask>("sassCompile") {
+            group = "build"
+            source = fileTree("src/main/sass")
+        }
+        tasks["build"].dependsOn(sassCompile)
+
+        extensions.add(SassTask::class.java, "sassCompile", sassCompile)
     }
 
+    override fun apply(project: Project) = project.applyPlugin()
 }

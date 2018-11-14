@@ -4,11 +4,13 @@ plugins {
     id("kotlin-platform-jvm")
     `kotlin-dsl`
     id("maven-publish")
+    id("com.gradle.plugin-publish") version "0.9.10"
     id("com.jfrog.bintray") version "1.8.0"
 }
 
 group = "com.github.salomonbrys.gradle.sass"
 version = "1.0.0"
+description = "A Gradle plugin to download & run the official dart-sass release with Gradle"
 
 repositories {
     jcenter()
@@ -27,42 +29,24 @@ dependencies {
     implementation("de.undercouch:gradle-download-task:3.4.3")
 }
 
-val sourcesJar = task<Jar>("sourcesJar") {
-    classifier = "sources"
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
+pluginBundle {
+    website = "https://github.com/SalomonBrys/gradle-sass"
+    vcsUrl = "https://github.com/SalomonBrys/gradle-sass.git"
+    tags = listOf("sass", "css", "compiler", "web")
 
-afterEvaluate {
-    sourcesJar.from(java.sourceSets["main"].allSource)
-}
-
-publishing {
-    (publications) {
-        "KJS"(MavenPublication::class) {
-            from(components["java"])
-            artifact(sourcesJar)
+    plugins {
+        create("Gradle-Sass") {
+            id = "com.github.salomonbrys.gradle.sass"
+            description = "A Gradle plugin to download & run the official dart-sass release with Gradle"
+            displayName = "Gradle Sass"
         }
     }
 }
 
-if (hasProperty("bintrayUsername") && hasProperty("bintrayApiKey")) {
-    val bintrayUsername: String by project
-    val bintrayApiKey: String by project
-
-    extensions.configure<BintrayExtension>("bintray") {
-        user = bintrayUsername
-        key = bintrayApiKey
-
-        pkg(delegateClosureOf<BintrayExtension.PackageConfig> {
-            repo = "SASS-Gradle"
-            name = project.name
-            setLicenses("MIT")
-            websiteUrl = "https://github.com/SalomonBrys/KMP-Gradle-Utils"
-            issueTrackerUrl = "https://github.com/SalomonBrys/KMP-Gradle-Utils/issues"
-            vcsUrl = "https://github.com/SalomonBrys/KMP-Gradle-Utils.git"
-
-            setPublications("KJS")
-        })
-
+publishing {
+    (publications) {
+        "GradleSass"(MavenPublication::class) {
+            from(components["java"])
+        }
     }
 }

@@ -14,18 +14,25 @@ open class SassTask : SourceTask() {
     var outputDir = project.buildDir.resolve("sass")
 
     enum class Url {
-        relative,
-        absolute
+        RELATIVE,
+        ABSOLUTE
     }
 
     sealed class SourceMaps {
         abstract val embedSource: Boolean
         data class None(override var embedSource: Boolean = false) : SourceMaps()
         data class Embed(override var embedSource: Boolean = false) : SourceMaps()
-        data class File(override var embedSource: Boolean = false, var url: Url = Url.relative) : SourceMaps()
+        data class File(override var embedSource: Boolean = false, var url: Url = Url.RELATIVE) : SourceMaps() {
+            val relative = Url.RELATIVE
+            val absolute = Url.ABSOLUTE
+        }
     }
 
     var sourceMaps: SourceMaps = SourceMaps.File()
+
+    init {
+        this.dependsOn(project.tasks["sassPrepare"])
+    }
 
     fun noSourceMap() {
         sourceMaps = SourceMaps.None()
@@ -33,22 +40,32 @@ open class SassTask : SourceTask() {
 
     @JvmOverloads
     fun embedSourceMap(action: Action<SourceMaps.Embed> = Action {}) {
-        sourceMaps = SourceMaps.Embed().also { action.execute(it) }
+        sourceMaps = SourceMaps.Embed().apply(action)
     }
-    fun embedSourceMap(closure: Closure<*>) {
-        sourceMaps = project.configure(SourceMaps.Embed(), closure) as SourceMaps
+
+    fun embedSourceMap(action: SourceMaps.Embed.() -> Unit) {
+        sourceMaps = SourceMaps.Embed().apply(action)
+    }
+
+    fun embedSourceMap(action: Closure<*>) {
+        sourceMaps = SourceMaps.Embed().apply(action)
     }
 
     @JvmOverloads
     fun fileSourceMap(action: Action<SourceMaps.File> = Action {}) {
-        sourceMaps = SourceMaps.File().also { action.execute(it) }
+        sourceMaps = SourceMaps.File().apply(action)
     }
-    fun fileSourceMap(closure: Closure<*>) {
-        sourceMaps = project.configure(SourceMaps.File(), closure) as SourceMaps
+
+    fun fileSourceMap(action: SourceMaps.File.() -> Unit) {
+        sourceMaps = SourceMaps.File().apply(action)
+    }
+
+    fun fileSourceMap(action: Closure<*>) {
+        sourceMaps = SourceMaps.File().apply(action)
     }
 
     @TaskAction
-    fun compileSass() {
+    internal fun compileSass() {
         val exe = (project.extensions["sass"] as SassExtension).exe
 
         getSource().visit {

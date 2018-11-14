@@ -8,7 +8,8 @@ import java.io.File
 
 class SassExtension(private val project: Project) {
 
-    val DEFAULT_VERSION = "1.14.2"
+    val DEFAULT_VERSION = "1.14.3"
+
     val DEFAULT_SASS_EXE = if (OperatingSystem.current().isWindows) "sass.bat" else "sass"
 
     val DEFAULT_SASS_DIR = File("${project.gradle.gradleUserHomeDir}/sass")
@@ -22,17 +23,27 @@ class SassExtension(private val project: Project) {
 
     @JvmOverloads
     fun download(action: Action<Exe.Download> = Action {}) {
-        exe = Exe.Download(DEFAULT_VERSION, DEFAULT_SASS_DIR).also { action.execute(it) }
+        exe = Exe.Download(DEFAULT_VERSION, DEFAULT_SASS_DIR).apply(action)
     }
-    fun download(closure: Closure<*>) {
-        exe = project.configure(Exe.Download(DEFAULT_VERSION, DEFAULT_SASS_DIR), closure) as Exe
+
+    fun download(action: Exe.Download.() -> Unit) {
+        exe = Exe.Download(DEFAULT_VERSION, DEFAULT_SASS_DIR).apply(action)
+    }
+
+    fun download(action: Closure<*>) {
+        exe = Exe.Download(DEFAULT_VERSION, DEFAULT_SASS_DIR).apply(action)
     }
 
     @JvmOverloads
     fun local(action: Action<Exe.Local> = Action {}) {
-        exe = Exe.Local(DEFAULT_SASS_EXE).also { action.execute(it) }
+        exe = Exe.Local(DEFAULT_SASS_EXE).apply(action)
     }
-    fun local(closure: Closure<*>) {
-        exe = project.configure(Exe.Local(DEFAULT_SASS_EXE), closure) as Exe
+
+    fun local(action: Exe.Local.() -> Unit) {
+        exe = Exe.Local(DEFAULT_SASS_EXE).apply(action)
+    }
+
+    fun local(action: Closure<*>) {
+        exe = Exe.Local(DEFAULT_SASS_EXE).apply(action)
     }
 }

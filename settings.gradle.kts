@@ -16,4 +16,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "gradle-sass"
+rootProject.name = "Gradle-Sass"
