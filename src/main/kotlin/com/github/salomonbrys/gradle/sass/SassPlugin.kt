@@ -68,7 +68,7 @@ class SassPlugin : Plugin<Project> {
         }
         tasks["build"].dependsOn(sassCompile)
 
-        extensions.add(SassTask::class.java, "sassCompile", sassCompile)
+        tasks.findByName("build")?.dependsOn(sassCompile)
     }
 
     override fun apply(project: Project) = project.applyPlugin()
