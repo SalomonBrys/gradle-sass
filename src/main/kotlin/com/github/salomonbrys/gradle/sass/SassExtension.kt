@@ -6,7 +6,7 @@ import org.gradle.api.Project
 import org.gradle.internal.os.OperatingSystem
 import java.io.File
 
-class SassExtension(private val project: Project) {
+class SassExtension(project: Project) {
 
     val DEFAULT_VERSION = "1.14.3"
 

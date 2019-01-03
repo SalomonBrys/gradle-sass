@@ -20,7 +20,7 @@ plugins {
 
 #### Download
 
-By default, the plugin downloads of [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation).
+By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation).
 
 If need be, you can configure the download:
 

@@ -66,22 +66,23 @@ open class SassTask : SourceTask() {
 
     @TaskAction
     internal fun compileSass() {
-        val exe = (project.extensions["sass"] as SassExtension).exe
+        val ext = project.extensions["sass"] as SassExtension
 
         getSource().visit {
             if (isDirectory || name.startsWith("_"))
                 return@visit
 
             project.exec {
+                val exe = ext.exe
                 executable = when (exe) {
                     is SassExtension.Exe.Local -> exe.path
-                    is SassExtension.Exe.Download -> "${exe.outputDir.absolutePath}/${exe.version}/dart-sass/sass"
+                    is SassExtension.Exe.Download -> "${exe.outputDir.absolutePath}/${exe.version}/dart-sass/${ext.DEFAULT_SASS_EXE}"
                 }
                 val sm = sourceMaps
                 args =
                         listOf(
                             file.absolutePath,
-                            File(outputDir.absolutePath + "/" + relativePath.parent.pathString + "/" + file.nameWithoutExtension + ".css").absolutePath
+                            File("${outputDir.absolutePath}/${relativePath.parent.pathString}/${file.nameWithoutExtension}.css").absolutePath
                         ) +
                         when (sm) {
                             is SourceMaps.None -> listOf("--no-source-map")
