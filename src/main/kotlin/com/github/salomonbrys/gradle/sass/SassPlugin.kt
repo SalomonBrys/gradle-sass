@@ -66,9 +66,8 @@ class SassPlugin : Plugin<Project> {
             group = "build"
             source = fileTree("src/main/sass")
         }
-        tasks["build"].dependsOn(sassCompile)
 
-        tasks.findByName("build")?.dependsOn(sassCompile)
+        tasks.maybeCreate("build").dependsOn(sassCompile)
     }
 
     override fun apply(project: Project) = project.applyPlugin()
