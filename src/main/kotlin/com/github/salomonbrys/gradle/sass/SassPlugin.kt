@@ -4,14 +4,18 @@ import de.undercouch.gradle.tasks.download.Download
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.internal.project.ProjectInternal
+import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.Copy
 import org.gradle.internal.os.OperatingSystem
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.task
+import org.gradle.language.base.plugins.LifecycleBasePlugin
+import org.gradle.tooling.model.GradleTask
 import java.io.File
 import java.lang.IllegalStateException
 
-class SassPlugin : Plugin<Project> {
+class SassPlugin : LifecycleBasePlugin() {
 
     private enum class ArchiveExt(val ext: String) {
         ZIP("zip"),
@@ -66,9 +70,13 @@ class SassPlugin : Plugin<Project> {
             group = "build"
             source = fileTree("src/main/sass")
         }
+        tasks[BUILD_TASK_NAME].dependsOn(sassCompile)
 
-        tasks.maybeCreate("build").dependsOn(sassCompile)
+        extensions.add(SassTask::class.java, "sassCompile", sassCompile)
     }
 
-    override fun apply(project: Project) = project.applyPlugin()
+    override fun apply(project: ProjectInternal) {
+        @Suppress("UnstableApiUsage") super.apply(project)
+        project.applyPlugin()
+    }
 }
