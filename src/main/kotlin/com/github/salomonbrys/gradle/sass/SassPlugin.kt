@@ -15,7 +15,7 @@ import org.gradle.tooling.model.GradleTask
 import java.io.File
 import java.lang.IllegalStateException
 
-class SassPlugin : LifecycleBasePlugin() {
+class SassPlugin : Plugin<Project> {
 
     private enum class ArchiveExt(val ext: String) {
         ZIP("zip"),
@@ -26,6 +26,8 @@ class SassPlugin : LifecycleBasePlugin() {
 
     @Suppress("UnstableApiUsage")
     private fun Project.applyPlugin() {
+
+        apply { plugin("base") }
 
         val sassPrepare = task<DefaultTask>("sassPrepare")
 
@@ -70,13 +72,12 @@ class SassPlugin : LifecycleBasePlugin() {
             group = "build"
             source = fileTree("src/main/sass")
         }
-        tasks[BUILD_TASK_NAME].dependsOn(sassCompile)
+        tasks[LifecycleBasePlugin.BUILD_TASK_NAME].dependsOn(sassCompile)
 
         extensions.add(SassTask::class.java, "sassCompile", sassCompile)
     }
 
-    override fun apply(project: ProjectInternal) {
-        @Suppress("UnstableApiUsage") super.apply(project)
+    override fun apply(project: Project) {
         project.applyPlugin()
     }
 }

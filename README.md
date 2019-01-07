@@ -12,7 +12,7 @@ This plugin is compatible with Kotlin Gradle DSL & offers the exact same API bet
 
 ```kotlin
 plugins {
-    id("com.github.salomonbrys.gradle.sass") version "1.0.2"
+    id("com.github.salomonbrys.gradle.sass") version "1.0.3"
 }
 ```
 
