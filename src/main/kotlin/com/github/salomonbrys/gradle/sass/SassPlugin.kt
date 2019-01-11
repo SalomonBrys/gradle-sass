@@ -49,7 +49,7 @@ class SassPlugin : Plugin<Project> {
                     val archive = "dart-sass-${exe.version}-$os-$arch.$ext"
                     val output = File("${gradle.gradleUserHomeDir}/sass/archive/$archive")
                     onlyIf { !output.exists() }
-                    src("https://github.com/sass/dart-sass/releases/download/${exe.version}/$archive")
+                    src("${exe.downloadBaseUrl}/${exe.version}/$archive")
                     dest(output)
                     tempAndMove(true)
                 }

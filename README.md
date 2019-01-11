@@ -20,7 +20,8 @@ plugins {
 
 #### Download
 
-By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation).
+By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation). You can specify another download location
+through `downloadBaseUrl` attribute.
 
 If need be, you can configure the download:
 
@@ -28,6 +29,7 @@ If need be, you can configure the download:
 sass {
     download {
         version = "1.13.4" // Default: "0.14.3".
+        downloadBaseUrl = "http://mirror.example.com" // Default: "https://github.com/sass/dart-sass/releases/download".
         outputDir = file("wherever/I/want") // Default: "$gradleUserHome/sass".
     }
 }
