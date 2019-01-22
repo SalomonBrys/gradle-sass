@@ -12,7 +12,7 @@ This plugin is compatible with Kotlin Gradle DSL & offers the exact same API bet
 
 ```kotlin
 plugins {
-    id("com.github.salomonbrys.gradle.sass") version "1.0.3"
+    id("com.github.salomonbrys.gradle.sass") version "1.1.0"
 }
 ```
 
@@ -20,8 +20,7 @@ plugins {
 
 #### Download
 
-By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation). You can specify another download location
-through `downloadBaseUrl` attribute.
+By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation).
 
 If need be, you can configure the download:
 
