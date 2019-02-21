@@ -28,7 +28,6 @@ open class SassTask : SourceTask() {
         }
     }
 
-    @org.gradle.api.tasks.Input
     var sourceMaps: SourceMaps = SourceMaps.File()
 
     @org.gradle.api.tasks.Input
