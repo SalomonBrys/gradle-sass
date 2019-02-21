@@ -127,6 +127,16 @@ sassCompile {
 }
 ```
 
+#### Style
+
+You can choose expanded (default) or compressed style output
+
+```kotlin
+sassCompile {
+    style = "compressed"  //Default: expanded
+}
+```
+
 #### Create new taks
 
 You can easily create `SassTask` tasks:

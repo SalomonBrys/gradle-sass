@@ -28,7 +28,12 @@ open class SassTask : SourceTask() {
         }
     }
 
+    @org.gradle.api.tasks.Input
     var sourceMaps: SourceMaps = SourceMaps.File()
+
+    @org.gradle.api.tasks.Input
+    var style: String = "expanded"
+
 
     init {
         this.dependsOn(project.tasks["sassPrepare"])
@@ -82,7 +87,8 @@ open class SassTask : SourceTask() {
                 args =
                         listOf(
                             file.absolutePath,
-                            File("${outputDir.absolutePath}/${relativePath.parent.pathString}/${file.nameWithoutExtension}.css").absolutePath
+                            File("${outputDir.absolutePath}/${relativePath.parent.pathString}/${file.nameWithoutExtension}.css").absolutePath,
+                            "--style=$style"
                         ) +
                         when (sm) {
                             is SourceMaps.None -> listOf("--no-source-map")
