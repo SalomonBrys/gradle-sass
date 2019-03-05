@@ -2,11 +2,13 @@ package com.github.salomonbrys.gradle.sass
 
 import groovy.lang.Closure
 import org.gradle.api.Action
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.kotlin.dsl.get
 import java.io.File
+import java.io.Serializable
 
 open class SassTask : SourceTask() {
 
@@ -18,7 +20,15 @@ open class SassTask : SourceTask() {
         ABSOLUTE
     }
 
-    sealed class SourceMaps {
+    enum class Style {
+        EXPANDED,
+        COMPRESSED
+    }
+
+    val expanded = Style.EXPANDED
+    val compressed = Style.COMPRESSED
+
+    sealed class SourceMaps : Serializable {
         abstract val embedSource: Boolean
         data class None(override var embedSource: Boolean = false) : SourceMaps()
         data class Embed(override var embedSource: Boolean = false) : SourceMaps()
@@ -28,7 +38,11 @@ open class SassTask : SourceTask() {
         }
     }
 
+    @Input
     var sourceMaps: SourceMaps = SourceMaps.File()
+
+    @Input
+    var style: Style = Style.EXPANDED
 
     init {
         this.dependsOn(project.tasks["sassPrepare"])
@@ -92,7 +106,8 @@ open class SassTask : SourceTask() {
                         when (sm.embedSource) {
                             true -> listOf("--embed-sources")
                             false -> listOf("--no-embed-sources")
-                        }
+                        } +
+                        listOf("--style=${style.name.toLowerCase()}")
             }
         }
 

@@ -1,4 +1,4 @@
-val gradleKotlinVersion = "1.2.31"
+val gradleKotlinVersion = "1.2.61"
 
 pluginManagement {
     resolutionStrategy {

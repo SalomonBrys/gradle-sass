@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.salomonbrys.gradle.sass"
-version = "1.1.0"
+version = "1.2.0"
 description = "A Gradle plugin to download & run the official dart-sass release with Gradle"
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
     maven(url = "https://plugins.gradle.org/m2/")
 }
 
-val kotlinVersion = "1.3.10"
+val kotlinVersion = "1.3.21"
 
 dependencies {
     implementation(gradleApi())
@@ -40,8 +40,8 @@ pluginBundle {
 }
 
 publishing {
-    (publications) {
-        "GradleSass"(MavenPublication::class) {
+    publications {
+        create<MavenPublication>("GradleSass") {
             from(components["java"])
         }
     }

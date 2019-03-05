@@ -12,7 +12,7 @@ This plugin is compatible with Kotlin Gradle DSL & offers the exact same API bet
 
 ```kotlin
 plugins {
-    id("com.github.salomonbrys.gradle.sass") version "1.1.0"
+    id("com.github.salomonbrys.gradle.sass") version "1.2.0"
 }
 ```
 
@@ -112,6 +112,16 @@ You can configure no sourcemap generation at all:
 ```kotlin
 sassCompile {
     noSourceMap()
+}
+```
+
+#### Style
+
+You can configure the CSS output style to expanded (by default) or compressed:
+
+ ```kotlin
+sassCompile {
+    style = compressed  // Valid values: expanded, compressed. Default: expanded.
 }
 ```
 
