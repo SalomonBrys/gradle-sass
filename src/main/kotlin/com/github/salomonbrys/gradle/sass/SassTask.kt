@@ -3,6 +3,7 @@ package com.github.salomonbrys.gradle.sass
 import groovy.lang.Closure
 import org.gradle.api.Action
 import org.gradle.api.file.FileCollection
+import org.gradle.api.file.FileTree
 import org.gradle.api.tasks.*
 import org.gradle.kotlin.dsl.get
 import java.io.File
@@ -51,6 +52,16 @@ open class SassTask : SourceTask() {
         this.dependsOn(project.tasks["sassPrepare"])
     }
 
+    @InputFiles
+    @SkipWhenEmpty
+    override fun getSource(): FileTree {
+        val libs = project.files (loadPaths
+                .map { project.fileTree(it) }
+                .map { it.filter { file -> file.isFile && SASS_FILE_NAME_PATTERN.matcher(file.name).matches() } }
+        )
+        return project.files (super.getSource(), libs).asFileTree
+    }
+
     fun noSourceMap() {
         sourceMaps = SourceMaps.None()
     }
@@ -89,7 +100,7 @@ open class SassTask : SourceTask() {
     internal fun compileSass() {
         val ext = project.extensions["sass"] as SassExtension
 
-        getSource().visit {
+        super.getSource().visit {
             if (isDirectory || name.startsWith("_"))
                 return@visit
 
