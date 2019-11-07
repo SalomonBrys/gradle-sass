@@ -2,13 +2,14 @@ package com.github.salomonbrys.gradle.sass
 
 import groovy.lang.Closure
 import org.gradle.api.Action
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.file.FileCollection
+import org.gradle.api.tasks.*
 import org.gradle.kotlin.dsl.get
 import java.io.File
 import java.io.Serializable
+import java.util.regex.Pattern
+
+private val SASS_FILE_NAME_PATTERN: Pattern = Pattern.compile(".*\\.(scss|css|sass)")
 
 open class SassTask : SourceTask() {
 
@@ -44,6 +45,8 @@ open class SassTask : SourceTask() {
     @Input
     var style: Style = Style.EXPANDED
 
+    var loadPaths: MutableList<File> = ArrayList()
+
     init {
         this.dependsOn(project.tasks["sassPrepare"])
     }
@@ -78,6 +81,10 @@ open class SassTask : SourceTask() {
         sourceMaps = SourceMaps.File().apply(action)
     }
 
+    fun loadPath (files: Array<File>) {
+        loadPaths.addAll(files)
+    }
+
     @TaskAction
     internal fun compileSass() {
         val ext = project.extensions["sass"] as SassExtension
@@ -106,6 +113,9 @@ open class SassTask : SourceTask() {
                         when (sm.embedSource) {
                             true -> listOf("--embed-sources")
                             false -> listOf("--no-embed-sources")
+                        } +
+                        loadPaths.map {
+                            "--load-path=$it"
                         } +
                         listOf("--style=${style.name.toLowerCase()}")
             }
