@@ -137,6 +137,18 @@ sassCompile {
 }
 ```
 
+#### Load path
+
+You can add directories to Sass’
+[--load-path](https://sass-lang.com/documentation/cli/dart-sass#load-path):
+
+```kotlin
+sassCompile {
+    loadPath file ("${projectDir}/node_modules")
+    loadPath file ("${projectDir}/some-sass-lib")
+}
+```
+
 #### Create new taks
 
 You can easily create `SassTask` tasks:
