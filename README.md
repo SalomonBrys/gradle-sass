@@ -1,5 +1,10 @@
-Gradle Sass
-===========
+# DEPRECATED
+This library is deprecated. You can still use it. It is not going any where.
+
+However, it is not maintained anymore.
+
+
+## Gradle Sass
 
 Gradle plugin to download and run Sass.
 Compatible with Gradle continuous build.
@@ -8,7 +13,7 @@ This plugin is compatible with Kotlin Gradle DSL & offers the exact same API bet
 
 **The Sass source files must, by default, be located in `src/main/sass`**.
 
-## Install
+### Install
 
 ```kotlin
 plugins {
@@ -16,9 +21,9 @@ plugins {
 }
 ```
 
-### Sass access configuration
+#### Sass access configuration
 
-#### Download
+##### Download
 
 By default, the plugin downloads [Dart-Sass](https://github.com/sass/dart-sass) (Sass official implementation).
 
@@ -34,7 +39,7 @@ sass {
 }
 ```
 
-#### Local
+##### Local
 
 You can instruct the plugin to run a locally installed version of sass instead of downloading a release:
 
@@ -54,11 +59,11 @@ sass {
 }
 ```
 
-### Sass execution configuration
+#### Sass execution configuration
 
 By default, the plugin creates a `sassCompile` task of type `SassTask`.
 
-#### Output
+##### Output
 
 You can configure the output directory:
 
@@ -68,7 +73,7 @@ sassCompile {
 }
 ```
 
-#### Source map
+##### Source map
 
 You can configure the sourcemap generation to be in a file:
 
@@ -115,7 +120,7 @@ sassCompile {
 }
 ```
 
-#### Style
+##### Style
 
 You can configure the CSS output style to expanded (by default) or compressed:
 
@@ -125,7 +130,7 @@ sassCompile {
 }
 ```
 
-#### Sources
+##### Sources
 
 `SassTask` tasks are `SourceTasks`, which means you can configure them just like any `SourceTask`:
 
@@ -137,7 +142,7 @@ sassCompile {
 }
 ```
 
-#### Create new taks
+##### Create new taks
 
 You can easily create `SassTask` tasks:
 
